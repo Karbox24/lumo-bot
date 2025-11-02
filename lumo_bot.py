@@ -156,3 +156,5 @@ app.add_handler(CommandHandler("reto", reto))
 app.add_handler(CommandHandler("puntos", puntos))
 app.add_handler(CommandHandler("salir", salir))
 app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, manejar_mensaje))
+
+app.run_polling()
