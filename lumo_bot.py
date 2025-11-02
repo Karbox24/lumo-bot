@@ -1,12 +1,17 @@
 import logging
+import os
+import json
+from io import StringIO
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
 import firebase_admin
 from firebase_admin import credentials, firestore
 import difflib
 
-# Inicializar Firebase
-cred = credentials.Certificate("firebase_config.json")
+# Inicializar Firebase desde variable de entorno
+firebase_json = os.environ.get("FIREBASE_CONFIG")
+cred_dict = json.load(StringIO(firebase_json))
+cred = credentials.Certificate(cred_dict)
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 
