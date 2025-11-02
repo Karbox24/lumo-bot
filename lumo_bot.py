@@ -1,6 +1,7 @@
 import logging
 import os
 import json
+import random
 from io import StringIO
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
@@ -23,6 +24,16 @@ menu_principal = ReplyKeyboardMarkup(
     [["/reto", "/puntos"], ["/salir"]],
     resize_keyboard=True
 )
+
+# Frases emocionales aleatorias
+frases_emocionales = [
+    "🌱 Qué hermoso lo que compartiste. Tu corazón está floreciendo.",
+    "💫 Me alegra que te abras así. Tu voz merece ser escuchada.",
+    "🌸 Gracias por confiar. Cada palabra tuya es un paso hacia tu luz.",
+    "🌿 Lo que dijiste tiene fuerza y ternura. Estoy contigo.",
+    "🕊️ Tu sinceridad es un regalo. Gracias por compartirla.",
+    "🔥 Cada paso que das te acerca a tu verdad. Estoy orgulloso de ti."
+]
 
 # Comando /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -119,6 +130,7 @@ async def manejar_mensaje(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         nuevos_puntos = user_data["puntos"] + 10
         nuevos_retos = user_data["retos"] + [mensaje]
+        respuesta_emocional = random.choice(frases_emocionales)
 
         user_ref.update({
             "puntos": nuevos_puntos,
@@ -127,7 +139,7 @@ async def manejar_mensaje(update: Update, context: ContextTypes.DEFAULT_TYPE):
         })
 
         await update.message.reply_text(
-            f"💖 ¡Gracias por compartir! Has ganado +10 puntos.\n✨ Total acumulado: {nuevos_puntos} puntos.",
+            f"{respuesta_emocional}\n✨ Has ganado +10 puntos. Total acumulado: {nuevos_puntos} puntos.",
             reply_markup=menu_principal
         )
     else:
@@ -144,5 +156,3 @@ app.add_handler(CommandHandler("reto", reto))
 app.add_handler(CommandHandler("puntos", puntos))
 app.add_handler(CommandHandler("salir", salir))
 app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, manejar_mensaje))
-
-app.run_polling()
